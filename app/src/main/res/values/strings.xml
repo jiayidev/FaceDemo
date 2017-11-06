@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FaceDemo</string>
+    <string name="alert_msg">请输入密钥和机密</string>
+</resources>
