@@ -1,5 +1,12 @@
 package dev.brian.facedemo.fragment;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,22 +14,15 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import dev.brian.facedemo.R;
 import dev.brian.facedemo.util.Constant;
@@ -32,42 +32,43 @@ import dev.brian.facedemo.util.HttpUtils;
 import dev.brian.facedemo.util.ImageUtil;
 
 /**
- * 作者: jiayi.zhang
- * 时间: 2017/11/6
- * 描述:
+ * 证件识别
+ *
+ * @author Administrator
  */
+public class OcridcardFragment extends Fragment implements OnClickListener {
+    private ImageView iv_ocridcard;//
+    private Button ib_ocridcard_enter;
+    private Button ib_ocridcard_choice;
 
-public class GestureFragment extends Fragment implements View.OnClickListener {
-    private ImageView iv_gesture;
-    private Button ib_gesture_enter;
-    private Button ib_gesture_choice;
+    private TextView tv_ocridcard;
 
-    private TextView tv_gesture;
+    private Bitmap scalingPhoto;// 位图
 
-    private Bitmap scalingPhoto;
+    private String ocridcard;
 
-    private String gesture;
-
-    private Paint paint;
+    private Paint paint;// 画笔工具
     private View view;
     private GifView gif;
 
     @Override
-    public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_gesture,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_ocridcard, container, false);
 
-        iv_gesture = (ImageView) view.findViewById(R.id.iv_gesture);
-        ib_gesture_enter = (Button) view.findViewById(R.id.ib_gesture_enter);
-        ib_gesture_choice = (Button) view.findViewById(R.id.ib_gesture_choice);
+        iv_ocridcard = (ImageView) view.findViewById(R.id.iv_ocridcard);
+        ib_ocridcard_enter = (Button) view.findViewById(R.id.ib_ocridcard_enter);
+        ib_ocridcard_choice = (Button) view.findViewById(R.id.ib_ocridcard_choice);
 
-        tv_gesture = (TextView) view.findViewById(R.id.tv_gesture);
+        tv_ocridcard = (TextView) view.findViewById(R.id.tv_ocridcard);
         gif = (GifView) view.findViewById(R.id.gif);
-        ib_gesture_enter.setOnClickListener(this);
-        ib_gesture_choice.setOnClickListener(this);
+        ib_ocridcard_enter.setOnClickListener(this);
+        ib_ocridcard_choice.setOnClickListener(this);
 
-        paint = new Paint();
+        paint = new Paint();// 创建画笔
 
-        scalingPhoto = BitmapFactory.decodeResource(this.getResources(), R.drawable.defualtg);
+        scalingPhoto = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.idcard);
         return view;
     }
 
@@ -75,24 +76,35 @@ public class GestureFragment extends Fragment implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             String str = (String) msg.obj;
-            System.out.println("********gesture:" + str);
-            if (str.equals("403") || str.equals("400") || str.equals("413") || str.equals("500")) {
-                Toast.makeText(getActivity(), "请再试一次", Toast.LENGTH_SHORT).show();
+            System.out.println("********ocridcard:" + str);
+            if (str.equals("403") || str.equals("400") || str.equals("413")
+                    || str.equals("500")) {
+                Toast.makeText(getActivity(), "Please Try Again",
+                        Toast.LENGTH_SHORT).show();
             } else {
                 try {
                     JSONObject resultJSON = new JSONObject(str);
-                    gesture = DrawUtil.GesturePrepareBitmap(resultJSON,
-                            scalingPhoto, paint, iv_gesture);
+                    System.out.println(resultJSON.getString("cards") + "=====");
+                    if (resultJSON.getString("cards").equals("[]")) {
+                        Toast.makeText(getActivity(),
+                                "Try Again", Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        ocridcard = DrawUtil.ocridcardPrepareBitmap(resultJSON,
+                                scalingPhoto, paint, iv_ocridcard);
 
-                    System.out.println("------------gesture" + gesture);
+                        System.out.println("------------ocridcard" + ocridcard);
 
-                    tv_gesture.setText("手势:" + gesture);
+                        tv_ocridcard.setText("证件信息:" + ocridcard);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            gif.setVisibility(View.GONE);
-        };
+            gif.setVisibility(View.GONE);// 停止gif
+        }
+
+        ;
     };
 
     @Override
@@ -105,7 +117,7 @@ public class GestureFragment extends Fragment implements View.OnClickListener {
                 //
                 scalingPhoto = ImageUtil.getScalingPhoto(photoPath);
                 //
-                iv_gesture.setImageBitmap(scalingPhoto);
+                iv_ocridcard.setImageBitmap(scalingPhoto);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -114,18 +126,18 @@ public class GestureFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ib_gesture_choice:
+            case R.id.ib_ocridcard_choice:
                 //
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_PICK);
                 intent.setType("image/*");
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, 1);//
                 break;
-            case R.id.ib_gesture_enter:
-                //
+            case R.id.ib_ocridcard_enter:
+                // 显示加载动画
                 gif.setVisibility(View.VISIBLE);
-                gif.setMovieResource(R.raw.red); //
-                //
+                gif.setMovieResource(R.raw.red); // 设置背景gif图片资源
+                // 确定按钮不允许再次点击
 
                 //
                 String base64ImageEncode = ImageUtil
@@ -142,8 +154,9 @@ public class GestureFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void run() {
                         try {
-                            String result = HttpUtils.post(Constant.URL_GESTURE,
+                            String result = HttpUtils.post(Constant.URL_OCRIDCARD,
                                     map);
+
                             Message message = new Message();
                             message.obj = result;
                             handler.sendMessage(message);

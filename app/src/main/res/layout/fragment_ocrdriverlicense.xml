@@ -1,44 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
+    android:layout_height="match_parent" >
+	
+	<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="手势识别"
+        android:text="驾照识别"
         android:textSize="20sp" />
-
     <ImageView
-        android:id="@+id/iv_gesture"
+        android:id="@+id/iv_ocrdriverlicense"
         android:layout_width="200dp"
         android:layout_height="300dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:contentDescription="人脸图片"
+        android:contentDescription="驾照"
         android:paddingTop="40dp"
-        android:src="@drawable/defualtg" />
+        android:src="@drawable/ocrdriverlicense" />
 
     <LinearLayout
-        android:id="@+id/ll_gesture"
+        android:id="@+id/ll_ocrdriverlicense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_gesture"
+        android:layout_below="@id/iv_ocrdriverlicense"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/ib_gesture_enter"
+            android:id="@+id/ib_ocrdriverlicense_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/enter"
             android:text="确定" />
 
         <Button
-            android:id="@+id/ib_gesture_choice"
+            android:id="@+id/ib_ocrdriverlicense_choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/choose"
@@ -49,17 +48,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/ll_gesture"
+        android:layout_below="@id/ll_ocrdriverlicense"
         android:orientation="horizontal"
-        android:paddingTop="20dp">
+        android:paddingTop="20dp" >
 
         <TextView
-            android:id="@+id/tv_gesture"
+            android:id="@+id/tv_ocrdriverlicense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:src="@drawable/ic_launcher"
-            android:text="手势"
+            android:text="驾照信息"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -71,4 +70,5 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
         android:enabled="false" />
+
 </RelativeLayout>
